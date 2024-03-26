@@ -172,9 +172,38 @@ bool nandio_read_sectors(sec_t offset, sec_t len, void *buffer) {
 	}
 }
 
+static bool write_sectors(sec_t start, sec_t len, const void *buffer) {
+	activity(COLOR_RED);
+	dsi_nand_crypt(crypt_buf, buffer, start * SECTOR_SIZE / AES_BLOCK_SIZE, len * SECTOR_SIZE / AES_BLOCK_SIZE);
+	// if (fseek(f, start * SECTOR_SIZE, SEEK_SET) != 0) {
+	// if (fwrite(crypt_buf, SECTOR_SIZE, len, f) == len) {
+	activity(COLOR_BRIGHT_RED);
+	if(nand_WriteSectors(start, len, crypt_buf)){
+		activity(-1);
+		return true;
+	} else {
+		prt("NANDIO: write error\n");
+		activity(-1);
+		return false;
+	}
+}
+
 bool nandio_write_sectors(sec_t offset, sec_t len, const void *buffer) {
-	// lol, nope
-	return false;
+	// I love bricking I want to brick my DSi and delete the firmware I want to remove all recovery options and ruin my DSi. 
+	// iprintf("W: %u(0x%08x), %u\n", (unsigned)offset, (unsigned)offset, (unsigned)len);
+	while (len >= CRYPT_BUF_LEN) {
+		if (!write_sectors(offset, CRYPT_BUF_LEN, buffer)) {
+			return false;
+		}
+		offset += CRYPT_BUF_LEN;
+		len -= CRYPT_BUF_LEN;
+		buffer = ((u8*)buffer) + SECTOR_SIZE * CRYPT_BUF_LEN;
+	}
+	if (len > 0) {
+		return write_sectors(offset, len, buffer);
+	} else {
+		return true;
+	}
 }
 
 bool nandio_clear_status() {
@@ -189,7 +218,7 @@ bool nandio_shutdown() {
 
 const DISC_INTERFACE io_dsi_nand = {
 	('N' << 24) | ('A' << 16) | ('N' << 8) | 'D',
-	FEATURE_MEDIUM_CANREAD,
+	FEATURE_MEDIUM_CANREAD | FEATURE_MEDIUM_CANWRITE,
 	nandio_startup,
 	nandio_is_inserted,
 	nandio_read_sectors,
