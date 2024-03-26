@@ -173,17 +173,13 @@ bool nandio_read_sectors(sec_t offset, sec_t len, void *buffer) {
 }
 
 static bool write_sectors(sec_t start, sec_t len, const void *buffer) {
-	activity(COLOR_RED);
 	dsi_nand_crypt(crypt_buf, buffer, start * SECTOR_SIZE / AES_BLOCK_SIZE, len * SECTOR_SIZE / AES_BLOCK_SIZE);
 	// if (fseek(f, start * SECTOR_SIZE, SEEK_SET) != 0) {
 	// if (fwrite(crypt_buf, SECTOR_SIZE, len, f) == len) {
-	activity(COLOR_BRIGHT_RED);
 	if(nand_WriteSectors(start, len, crypt_buf)){
-		activity(-1);
 		return true;
 	} else {
-		prt("NANDIO: write error\n");
-		activity(-1);
+		//printf("NANDIO: write error\n");
 		return false;
 	}
 }
