@@ -26,10 +26,10 @@ jobs:
           sudo apt-get install p7zip-full -y
       - name: Setup environment
         run: git config --global safe.directory '*'
-      - name: Build & Package GodMode9i
+      - name: Build GodMode9i
         id: build
         run: |
-          make dsi
+          make all dsi
           chmod +x make_cia
           ./make_cia --srl="GodMode9i.dsi" --id_0=$(git rev-parse --short=7 HEAD) --tikID=$(git rev-parse --short=16 HEAD)
       - name: Publish unsigned build to GH Actions
