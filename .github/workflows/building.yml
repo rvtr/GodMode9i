@@ -19,16 +19,29 @@ jobs:
     name: Build with Docker using devkitARM
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install p7zip-full -y
       - name: Setup environment
         run: git config --global safe.directory '*'
-      - name: Build GodMode9i
-        run: make
-      - name: Publish build to GH Actions
+      - name: Build & Package GodMode9i
+        id: build
+        run: |
+          make dsi
+          chmod +x make_cia
+          ./make_cia --srl="GodMode9i.dsi" --id_0=$(git rev-parse --short=7 HEAD) --tikID=$(git rev-parse --short=16 HEAD)
+      - name: Publish unsigned build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
           path: "GodMode9i.dsi"
           name: GodMode9i-Nightly-Unsigned
+      - name: Publish CTR build to GH Actions
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          path: "GodMode9i.cia"
+          name: GodMode9i-Nightly-3DS
 
   devsign:
     runs-on: windows-latest
