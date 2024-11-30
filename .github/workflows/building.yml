@@ -37,6 +37,11 @@ jobs:
         with:
           path: "GodMode9i.dsi"
           name: GodMode9i-Nightly-Unsigned
+      - name: Publish unsigned build to GH Actions
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          path: "GodMode9i_sys.dsi"
+          name: GodMode9i-Nightly-Unsigned_sys
       - name: Publish CTR build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
@@ -53,6 +58,11 @@ jobs:
         with:
           name: GodMode9i-Nightly-Unsigned
           path: D:\a\GodMode9i\GodMode9i\GodMode9i-Build
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: GodMode9i-Nightly-Unsigned_sys
+          path: D:\a\GodMode9i\GodMode9i\GodMode9i-Build_sys
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -66,25 +76,38 @@ jobs:
       - name: Devsign GodMode9i
         run: |
           cp GodMode9i-Build\GodMode9i.dsi ntool
+          cp GodMode9i-Build_sys\GodMode9i_sys.dsi ntool
           cd ntool
           pip install pycryptodome
           python ntool.py srl_retail2dev GodMode9i.dsi
+          python ntool.py srl_retail2dev GodMode9i_sys.dsi
       - name: Publish devsigned build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
           path: "ntool/GodMode9i_dev.srl"
           name: GodMode9i-Nightly-Devsigned
+      - name: Publish devsigned build to GH Actions
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          path: "ntool/GodMode9i_sys_dev.srl"
+          name: GodMode9i-Nightly-Devsigned_sys
       - name: Make a devsigned TAD
         run: |
           curl https://cdn.randommeaninglesscharacters.com/tools/maketad/maketad.zip -o maketad.zip
           7z e maketad.zip
           cp ntool/GodMode9i_dev.srl .
-          .\maketad-20090604.exe GodMode9i_dev.srl -s -o GodMode9i-Nightly.tad
+          .\maketad-20090604.exe GodMode9i_sys_dev.srl -s -o GodMode9i-Nightly_sys.tad
+          .\maketad-20090604.exe GodMode9i_dev.srl -o GodMode9i-Nightly.tad
       - name: Publish devsigned TAD to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
           path: "GodMode9i-Nightly.tad"
           name: GodMode9i-Nightly-TAD
+      - name: Publish devsigned TAD to GH Actions
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          path: "GodMode9i-Nightly_sys.tad"
+          name: GodMode9i-Nightly-TAD_sys
 
   # Only run this for non-PR jobs.
   publish_build:
