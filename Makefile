@@ -17,19 +17,19 @@ export NITRODATA := nitrofiles
 
 .PHONY: all bootloader bootstub clean dsi arm7/$(TARGET).elf arm9/$(TARGET).elf
 
-all:	bootloader bootstub $(TARGET).nds
+all:	bootloader bootstub
 
-dsi:	$(TARGET).dsi
+dsi:	$(TARGET).dsi $(TARGET)_sys.dsi
 
-$(TARGET).nds:	arm7/$(TARGET).elf arm9/$(TARGET).elf
-	ndstool	-c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf -d $(NITRODATA) \
-			-b icon.bmp "GodMode9i;Rocket Robz" \
-			-z 80040000
+$(TARGET)_sys.dsi:	arm7/$(TARGET).elf arm9/$(TARGET).elf
+	ndstool	-c $(TARGET)_sys.dsi -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf -d $(NITRODATA) \
+			-b icon.bmp "GodMode9i_sys;Rocket Robz" \
+			-g 4GMA 00 "GODMODE9I" -z 80040000 -u 00030015
 
 $(TARGET).dsi:	arm7/$(TARGET).elf arm9/$(TARGET).elf
 	ndstool	-c $(TARGET).dsi -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf -d $(NITRODATA) \
-			-b icon.bmp "GodMode9i;Rocket Robz" \
-			-g HGMA 00 "GODMODE9I" -z 80040000 -u 00030004
+			-b icon.bmp "GodMode9i_user;Rocket Robz" \
+			-g 4GMB 00 "GODMODE9I" -z 80040000 -u 00030004
 
 #---------------------------------------------------------------------------------
 arm7/$(TARGET).elf:
