@@ -40,7 +40,7 @@ jobs:
       - name: Publish unsigned build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
-          path: "GodMode9i_sys.dsi"
+          path: "GodMode9i-sys.dsi"
           name: GodMode9i-Nightly-Unsigned_sys
       - name: Publish CTR build to GH Actions
         uses: actions/upload-artifact@v4.3.6
@@ -76,11 +76,11 @@ jobs:
       - name: Devsign GodMode9i
         run: |
           cp GodMode9i-Build\GodMode9i.dsi ntool
-          cp GodMode9i-Build_sys\GodMode9i_sys.dsi ntool
+          cp GodMode9i-Build_sys\GodMode9i-sys.dsi ntool
           cd ntool
           pip install pycryptodome
           python ntool.py srl_retail2dev GodMode9i.dsi
-          python ntool.py srl_retail2dev GodMode9i_sys.dsi
+          python ntool.py srl_retail2dev GodMode9i-sys.dsi
       - name: Publish devsigned build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
@@ -89,14 +89,14 @@ jobs:
       - name: Publish devsigned build to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
-          path: "ntool/GodMode9i_sys_dev.srl"
+          path: "ntool/GodMode9i-sys_dev.srl"
           name: GodMode9i-Nightly-Devsigned_sys
       - name: Make a devsigned TAD
         run: |
           curl https://cdn.randommeaninglesscharacters.com/tools/maketad/maketad.zip -o maketad.zip
           7z e maketad.zip
           cp ntool/GodMode9i_dev.srl .
-          .\maketad-20090604.exe GodMode9i_sys_dev.srl -s -o GodMode9i-Nightly_sys.tad
+          .\maketad-20090604.exe GodMode9i-sys_dev.srl -s -o GodMode9i-Nightly-sys.tad
           .\maketad-20090604.exe GodMode9i_dev.srl -o GodMode9i-Nightly.tad
       - name: Publish devsigned TAD to GH Actions
         uses: actions/upload-artifact@v4.3.6
@@ -106,7 +106,7 @@ jobs:
       - name: Publish devsigned TAD to GH Actions
         uses: actions/upload-artifact@v4.3.6
         with:
-          path: "GodMode9i-Nightly_sys.tad"
+          path: "GodMode9i-Nightly-sys.tad"
           name: GodMode9i-Nightly-TAD_sys
 
   # Only run this for non-PR jobs.
