@@ -22,7 +22,7 @@ all:	bootloader bootstub
 dsi:	$(TARGET).dsi $(TARGET)_sys.dsi
 
 $(TARGET)_sys.dsi:	arm7/$(TARGET).elf arm9/$(TARGET).elf
-	ndstool	-c $(TARGET)_sys.dsi -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf -d $(NITRODATA) \
+	ndstool	-c $(TARGET)-sys.dsi -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf -d $(NITRODATA) \
 			-b icon.bmp "GodMode9i_sys;Rocket Robz" \
 			-g 4GMA 00 "GODMODE9I" -z 80040000 -u 00030015
 
