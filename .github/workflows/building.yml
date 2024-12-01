@@ -96,6 +96,7 @@ jobs:
           curl https://cdn.randommeaninglesscharacters.com/tools/maketad/maketad.zip -o maketad.zip
           7z e maketad.zip
           cp ntool/GodMode9i_dev.srl .
+          cp ntool/GodMode9i-sys_dev.srl .
           .\maketad-20090604.exe GodMode9i-sys_dev.srl -s -o GodMode9i-Nightly-sys.tad
           .\maketad-20090604.exe GodMode9i_dev.srl -o GodMode9i-Nightly.tad
       - name: Publish devsigned TAD to GH Actions
